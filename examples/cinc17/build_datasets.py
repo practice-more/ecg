@@ -4,6 +4,9 @@ import os
 import random
 import scipy.io as sio
 import tqdm
+import os
+
+cinc_ws = os.path.dirname(__file__)
 
 STEP = 256
 
@@ -20,7 +23,7 @@ def load_all(data_path):
         ecg_file = os.path.join(data_path, record + ".mat")
         ecg_file = os.path.abspath(ecg_file)
         ecg = load_ecg_mat(ecg_file)
-        num_labels = ecg.shape[0] / STEP
+        num_labels = int(ecg.shape[0] / STEP)
         dataset.append((ecg_file, [label]*num_labels))
     return dataset 
 
@@ -43,9 +46,10 @@ if __name__ == "__main__":
     random.seed(2018)
 
     dev_frac = 0.1
-    data_path = "data/training2017/"
+
+    data_path = os.path.join(cinc_ws, "data/training2017/")    
     dataset = load_all(data_path)
     train, dev = split(dataset, dev_frac)
-    make_json("train.json", train)
-    make_json("dev.json", dev)
+    make_json(os.path.join(cinc_ws, "train.json"), train)
+    make_json(os.path.join(cinc_ws, "dev.json"), dev)
 
